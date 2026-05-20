@@ -4,20 +4,21 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- Feature 02: Editor Chrome — Complete
+- Feature 03: Auth — Complete
 
 ## Current Goal
 
-- Define the immediate implementation goal here.
+- None. Auth feature complete.
 
 ## Completed
 
 - `01-design-system`: shadcn/ui initialized (Nova preset, Radix), all required UI primitives installed (Button, Card, Dialog, Input, Tabs, Textarea, ScrollArea), lucide-react installed, `lib/utils.ts` created with `cn()` helper, `globals.css` updated with full Ghost AI dark theme tokens and shadcn semantic token overrides.
 - `02-editor`: `EditorNavbar` and `ProjectSidebar` shell components created. Navbar is fixed-height with sidebar toggle (`PanelLeftOpen`/`PanelLeftClose`). Sidebar floats as an overlay (translate-x transition, does not push content), includes Projects header with close button, shadcn Tabs (My Projects / Shared) with empty placeholder states, and a full-width New Project button. Dialog pattern is ready via the existing shadcn `Dialog` component in `components/ui/dialog.tsx`.
+- `03-auth`: `@clerk/ui` installed. `proxy.ts` at project root wraps `clerkMiddleware` — all routes protected by default, `/sign-in` and `/sign-up` are public. `ClerkProvider` wraps root layout with Clerk `dark` base theme and CSS variable overrides (no hardcoded colors). Sign-in page (`/sign-in`) and sign-up page (`/sign-up`) use a two-panel layout: left panel (lg+) shows logo, tagline, and feature list; right panel shows the Clerk form; small screens show form only. `/` redirects authenticated users to `/editor` and unauthenticated users to `/sign-in`. `UserButton` added to the editor navbar right section.
 
 ## In Progress
 
-- None yet.
+- None.
 
 ## Next Up
 
