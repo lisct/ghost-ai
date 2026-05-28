@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { EditorNavbar } from "./editor-navbar"
-import { ProjectSidebar } from "./project-sidebar"
+import { useState } from "react";
+import { EditorNavbar } from "./editor-navbar";
+import { ProjectSidebar } from "./project-sidebar";
 
 export function EditorShell({ children }: { children: React.ReactNode }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
     <>
@@ -17,7 +17,7 @@ export function EditorShell({ children }: { children: React.ReactNode }) {
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
       />
-      <main className="h-screen pt-12">{children}</main>
+      <main className="mt-12 h-[calc(100vh-3rem)]">{children}</main>
     </>
-  )
+  );
 }

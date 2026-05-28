@@ -21,7 +21,7 @@ Requirements:
 
 - sidebar should float above the editor canvas
 - opening it should not push page content
-- slides in from the ;eft
+- slides in from the left
 - accept `isOpen` prop
 - header with `Projects` title + close button
 - shadcn `Tabs`:
