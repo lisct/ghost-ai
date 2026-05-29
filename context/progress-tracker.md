@@ -18,7 +18,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## In Progress
 
-- None.
+- `04-project-dialog`: Editor home screen with heading/description/New Project button. Create, Rename, and Delete project dialogs. Sidebar project item actions (rename, delete) with owned-only gating. Mobile backdrop scrim. `useProjectDialogs` hook + `ProjectDialogsContext`. Mock data only — no API calls.
 
 ## Next Up
 
