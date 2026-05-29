@@ -1,17 +1,21 @@
-"use client"
+"use client";
 
-import { Pencil, Plus, Trash2, X } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { MOCK_MY_PROJECTS, MOCK_SHARED_PROJECTS, type Project } from "@/lib/mock-projects"
+import { Pencil, Plus, Trash2, X } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  MOCK_MY_PROJECTS,
+  MOCK_SHARED_PROJECTS,
+  type Project,
+} from "@/lib/mock-projects";
 
 interface ProjectSidebarProps {
-  isOpen: boolean
-  onClose: () => void
-  onNewProject: () => void
-  onRenameProject: (project: Project) => void
-  onDeleteProject: (project: Project) => void
+  isOpen: boolean;
+  onClose: () => void;
+  onNewProject: () => void;
+  onRenameProject: (project: Project) => void;
+  onDeleteProject: (project: Project) => void;
 }
 
 export function ProjectSidebar({
@@ -40,7 +44,9 @@ export function ProjectSidebar({
         )}
       >
         <div className="flex items-center justify-between border-b border-surface-border px-4 py-3">
-          <span className="text-sm font-medium text-copy-primary">Projects</span>
+          <span className="text-sm font-medium text-copy-primary">
+            Projects
+          </span>
           <Button
             variant="ghost"
             size="icon"
@@ -108,25 +114,30 @@ export function ProjectSidebar({
         </div>
       </aside>
     </>
-  )
+  );
 }
 
 interface ProjectItemProps {
-  project: Project
-  onRename: (project: Project) => void
-  onDelete: (project: Project) => void
+  project: Project;
+  onRename: (project: Project) => void;
+  onDelete: (project: Project) => void;
 }
 
 function ProjectItem({ project, onRename, onDelete }: ProjectItemProps) {
   return (
     <li className="group flex cursor-pointer items-center justify-between rounded-xl px-2 py-1.5 hover:bg-elevated">
-      <span className="truncate text-sm text-copy-secondary">{project.name}</span>
+      <span className="truncate text-sm text-copy-secondary">
+        {project.name}
+      </span>
       {project.isOwned && (
-        <div className="ml-2 flex shrink-0 gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
+        <div className="ml-2 flex shrink-0 gap-0.5 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
           <Button
             variant="ghost"
             size="icon-xs"
-            onClick={(e) => { e.stopPropagation(); onRename(project) }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onRename(project);
+            }}
             aria-label={`Rename ${project.name}`}
           >
             <Pencil className="h-3 w-3" />
@@ -134,7 +145,10 @@ function ProjectItem({ project, onRename, onDelete }: ProjectItemProps) {
           <Button
             variant="ghost"
             size="icon-xs"
-            onClick={(e) => { e.stopPropagation(); onDelete(project) }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(project);
+            }}
             aria-label={`Delete ${project.name}`}
           >
             <Trash2 className="h-3 w-3" />
@@ -142,5 +156,5 @@ function ProjectItem({ project, onRename, onDelete }: ProjectItemProps) {
         </div>
       )}
     </li>
-  )
+  );
 }

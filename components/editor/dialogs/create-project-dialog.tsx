@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Dialog,
@@ -8,10 +8,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Loader2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/dialog";
+import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 function toSlug(name: string): string {
   return name
@@ -20,16 +20,16 @@ function toSlug(name: string): string {
     .replace(/\s+/g, "-")
     .replace(/[^a-z0-9-]/g, "")
     .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "")
+    .replace(/^-|-$/g, "");
 }
 
 interface CreateProjectDialogProps {
-  open: boolean
-  onClose: () => void
-  onSubmit: () => void
-  formName: string
-  setFormName: (name: string) => void
-  isLoading: boolean
+  open: boolean;
+  onClose: () => void;
+  onSubmit: () => void;
+  formName: string;
+  setFormName: (name: string) => void;
+  isLoading: boolean;
 }
 
 export function CreateProjectDialog({
@@ -40,14 +40,24 @@ export function CreateProjectDialog({
   setFormName,
   isLoading,
 }: CreateProjectDialogProps) {
-  const slug = toSlug(formName)
+  const slug = toSlug(formName);
+  const canSubmit = Boolean(formName.trim()) && Boolean(slug) && !isLoading;
 
   return (
-    <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) onClose() }}>
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen) => {
+        if (!isOpen) onClose();
+      }}
+    >
       <DialogContent className="rounded-3xl sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-lg text-white">Create Project</DialogTitle>
-          <DialogDescription>Name your new architecture workspace.</DialogDescription>
+          <DialogTitle className="text-lg text-white">
+            Create Project
+          </DialogTitle>
+          <DialogDescription>
+            Name your new architecture workspace.
+          </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-3 py-1">
           <Input
@@ -67,7 +77,7 @@ export function CreateProjectDialog({
           </p>
         </div>
         <DialogFooter>
-          <Button disabled={!formName.trim() || isLoading} onClick={onSubmit}>
+          <Button disabled={!canSubmit} onClick={onSubmit}>
             {isLoading ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -77,9 +87,11 @@ export function CreateProjectDialog({
               "Create Project"
             )}
           </Button>
-          <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
+          <DialogClose render={<Button variant="outline" />}>
+            Cancel
+          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Dialog,
@@ -8,20 +8,20 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Loader2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import type { Project } from "@/lib/mock-projects"
+} from "@/components/ui/dialog";
+import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import type { Project } from "@/lib/mock-projects";
 
 interface RenameProjectDialogProps {
-  open: boolean
-  onClose: () => void
-  onSubmit: () => void
-  project: Project | null
-  formName: string
-  setFormName: (name: string) => void
-  isLoading: boolean
+  open: boolean;
+  onClose: () => void;
+  onSubmit: () => void;
+  project: Project | null;
+  formName: string;
+  setFormName: (name: string) => void;
+  isLoading: boolean;
 }
 
 export function RenameProjectDialog({
@@ -34,14 +34,22 @@ export function RenameProjectDialog({
   isLoading,
 }: RenameProjectDialogProps) {
   function handleSubmit() {
-    if (formName.trim()) onSubmit()
+    if (isLoading) return;
+    if (formName.trim()) onSubmit();
   }
 
   return (
-    <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) onClose() }}>
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen) => {
+        if (!isOpen) onClose();
+      }}
+    >
       <DialogContent className="rounded-3xl sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-lg text-white">Rename Project</DialogTitle>
+          <DialogTitle className="text-lg text-white">
+            Rename Project
+          </DialogTitle>
           {project && (
             <DialogDescription>
               Renaming{" "}
@@ -53,13 +61,21 @@ export function RenameProjectDialog({
           <Input
             value={formName}
             onChange={(e) => setFormName(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter") handleSubmit() }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleSubmit();
+              }
+            }}
             autoFocus
             className="text-white"
           />
         </div>
         <DialogFooter>
-          <Button disabled={!formName.trim() || isLoading} onClick={handleSubmit}>
+          <Button
+            disabled={!formName.trim() || isLoading}
+            onClick={handleSubmit}
+          >
             {isLoading ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -69,9 +85,11 @@ export function RenameProjectDialog({
               "Save"
             )}
           </Button>
-          <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
+          <DialogClose render={<Button variant="outline" />}>
+            Cancel
+          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
