@@ -19,6 +19,7 @@ interface DeleteProjectDialogProps {
   onSubmit: () => void
   project: ProjectListItem | null
   isLoading: boolean
+  error?: string | null
 }
 
 export function DeleteProjectDialog({
@@ -27,6 +28,7 @@ export function DeleteProjectDialog({
   onSubmit,
   project,
   isLoading,
+  error,
 }: DeleteProjectDialogProps) {
   return (
     <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) onClose() }}>
@@ -45,6 +47,7 @@ export function DeleteProjectDialog({
             )}
           </DialogDescription>
         </DialogHeader>
+        {error && <p className="text-xs text-error">{error}</p>}
         <DialogFooter>
           <Button variant="destructive" disabled={isLoading} onClick={onSubmit}>
             {isLoading ? (

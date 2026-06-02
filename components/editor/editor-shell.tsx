@@ -25,6 +25,7 @@ export function EditorShell({ children, myProjects, sharedProjects }: EditorShel
     roomIdPreview,
     targetProject,
     isLoading,
+    errorMessage,
     openCreateDialog,
     openRenameDialog,
     openDeleteDialog,
@@ -61,6 +62,7 @@ export function EditorShell({ children, myProjects, sharedProjects }: EditorShel
         setFormName={setFormName}
         roomIdPreview={roomIdPreview}
         isLoading={isLoading}
+        error={errorMessage}
       />
       <RenameProjectDialog
         open={dialog === "rename"}
@@ -70,6 +72,7 @@ export function EditorShell({ children, myProjects, sharedProjects }: EditorShel
         formName={formName}
         setFormName={setFormName}
         isLoading={isLoading}
+        error={errorMessage}
       />
       <DeleteProjectDialog
         open={dialog === "delete"}
@@ -77,6 +80,7 @@ export function EditorShell({ children, myProjects, sharedProjects }: EditorShel
         onSubmit={handleDelete}
         project={targetProject}
         isLoading={isLoading}
+        error={errorMessage}
       />
     </ProjectDialogsContext.Provider>
   );

@@ -9,20 +9,25 @@ export async function PATCH(
   if (!userId) return Response.json({ error: "Unauthorized" }, { status: 401 })
 
   const { projectId } = await ctx.params
-
-  const project = await db.project.findUnique({ where: { id: projectId } })
-  if (!project) return Response.json({ error: "Not found" }, { status: 404 })
-  if (project.ownerId !== userId)
-    return Response.json({ error: "Forbidden" }, { status: 403 })
-
   const body = await request.json().catch(() => ({}))
   const name: string = body?.name?.trim() || "Untitled Project"
 
-  const updated = await db.project.update({
-    where: { id: projectId },
+  const { count } = await db.project.updateMany({
+    where: { id: projectId, ownerId: userId },
     data: { name },
   })
 
+  if (count === 0) {
+    const exists = await db.project.findUnique({
+      where: { id: projectId },
+      select: { id: true },
+    })
+    if (!exists) return Response.json({ error: "Not found" }, { status: 404 })
+    return Response.json({ error: "Forbidden" }, { status: 403 })
+  }
+
+  const updated = await db.project.findUnique({ where: { id: projectId } })
+  if (!updated) return Response.json({ error: "Not found" }, { status: 404 })
   return Response.json(updated)
 }
 
@@ -35,12 +40,18 @@ export async function DELETE(
 
   const { projectId } = await ctx.params
 
-  const project = await db.project.findUnique({ where: { id: projectId } })
-  if (!project) return Response.json({ error: "Not found" }, { status: 404 })
-  if (project.ownerId !== userId)
-    return Response.json({ error: "Forbidden" }, { status: 403 })
+  const { count } = await db.project.deleteMany({
+    where: { id: projectId, ownerId: userId },
+  })
 
-  await db.project.delete({ where: { id: projectId } })
+  if (count === 0) {
+    const exists = await db.project.findUnique({
+      where: { id: projectId },
+      select: { id: true },
+    })
+    if (!exists) return Response.json({ error: "Not found" }, { status: 404 })
+    return Response.json({ error: "Forbidden" }, { status: 403 })
+  }
 
   return new Response(null, { status: 204 })
 }

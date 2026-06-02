@@ -4,6 +4,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 const DATABASE_URL = process.env.DATABASE_URL ?? "";
 
 function createClient() {
+  if (!DATABASE_URL) throw new Error("Missing DATABASE_URL environment variable");
   const adapter = new PrismaPg({ connectionString: DATABASE_URL });
   if (DATABASE_URL.startsWith("prisma+postgres://")) {
     // eslint-disable-next-line @typescript-eslint/no-require-imports

@@ -16,9 +16,10 @@ export async function getOwnedProjects(userId: string): Promise<ProjectListItem[
 }
 
 export async function getSharedProjects(email: string): Promise<ProjectListItem[]> {
-  if (!email) return []
+  const normalizedEmail = email.trim().toLowerCase()
+  if (!normalizedEmail) return []
   const rows = await db.projectCollaborator.findMany({
-    where: { email },
+    where: { email: normalizedEmail },
     include: { project: { select: { id: true, name: true } } },
     orderBy: { createdAt: "desc" },
   })

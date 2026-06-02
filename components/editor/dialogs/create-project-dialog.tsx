@@ -21,6 +21,7 @@ interface CreateProjectDialogProps {
   setFormName: (name: string) => void;
   roomIdPreview: string;
   isLoading: boolean;
+  error?: string | null;
 }
 
 export function CreateProjectDialog({
@@ -31,6 +32,7 @@ export function CreateProjectDialog({
   setFormName,
   roomIdPreview,
   isLoading,
+  error,
 }: CreateProjectDialogProps) {
   const canSubmit = Boolean(formName.trim()) && !isLoading;
 
@@ -66,6 +68,7 @@ export function CreateProjectDialog({
               </>
             )}
           </p>
+          {error && <p className="text-xs text-error">{error}</p>}
         </div>
         <DialogFooter>
           <Button disabled={!canSubmit} onClick={onSubmit}>

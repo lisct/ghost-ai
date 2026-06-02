@@ -20,6 +20,15 @@ function shortSuffix(): string {
   return Math.random().toString(36).slice(2, 7)
 }
 
+async function extractErrorMessage(res: Response): Promise<string> {
+  try {
+    const body = await res.json()
+    return body?.error ?? `Request failed (${res.status})`
+  } catch {
+    return `Request failed (${res.status})`
+  }
+}
+
 export function useProjectActions() {
   const router = useRouter()
   const params = useParams()
@@ -28,6 +37,7 @@ export function useProjectActions() {
   const [suffix, setSuffix] = useState("")
   const [targetProject, setTargetProject] = useState<ProjectListItem | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const roomIdPreview = formName.trim() ? `${toSlug(formName)}-${suffix}` : ""
 
@@ -35,17 +45,20 @@ export function useProjectActions() {
     setFormName("")
     setSuffix(shortSuffix())
     setTargetProject(null)
+    setErrorMessage(null)
     setDialog("create")
   }
 
   function openRenameDialog(project: ProjectListItem) {
     setFormName(project.name)
     setTargetProject(project)
+    setErrorMessage(null)
     setDialog("rename")
   }
 
   function openDeleteDialog(project: ProjectListItem) {
     setTargetProject(project)
+    setErrorMessage(null)
     setDialog("delete")
   }
 
@@ -54,22 +67,29 @@ export function useProjectActions() {
     setFormName("")
     setTargetProject(null)
     setIsLoading(false)
+    setErrorMessage(null)
   }
 
   async function handleCreate() {
     const name = formName.trim() || "Untitled Project"
     setIsLoading(true)
+    setErrorMessage(null)
     try {
       const res = await fetch("/api/projects", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name }),
       })
-      if (!res.ok) throw new Error("Failed to create project")
+      if (!res.ok) {
+        setErrorMessage(await extractErrorMessage(res))
+        setIsLoading(false)
+        return
+      }
       const project = (await res.json()) as { id: string }
       closeDialog()
       router.push(`/editor/${project.id}`)
     } catch {
+      setErrorMessage("Something went wrong. Please try again.")
       setIsLoading(false)
     }
   }
@@ -77,16 +97,22 @@ export function useProjectActions() {
   async function handleRename() {
     if (!targetProject || !formName.trim()) return
     setIsLoading(true)
+    setErrorMessage(null)
     try {
       const res = await fetch(`/api/projects/${targetProject.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: formName.trim() }),
       })
-      if (!res.ok) throw new Error("Failed to rename project")
+      if (!res.ok) {
+        setErrorMessage(await extractErrorMessage(res))
+        setIsLoading(false)
+        return
+      }
       closeDialog()
       router.refresh()
     } catch {
+      setErrorMessage("Something went wrong. Please try again.")
       setIsLoading(false)
     }
   }
@@ -94,11 +120,16 @@ export function useProjectActions() {
   async function handleDelete() {
     if (!targetProject) return
     setIsLoading(true)
+    setErrorMessage(null)
     try {
       const res = await fetch(`/api/projects/${targetProject.id}`, {
         method: "DELETE",
       })
-      if (!res.ok) throw new Error("Failed to delete project")
+      if (!res.ok) {
+        setErrorMessage(await extractErrorMessage(res))
+        setIsLoading(false)
+        return
+      }
       const activeProjectId = params?.projectId as string | undefined
       closeDialog()
       if (activeProjectId === targetProject.id) {
@@ -107,6 +138,7 @@ export function useProjectActions() {
         router.refresh()
       }
     } catch {
+      setErrorMessage("Something went wrong. Please try again.")
       setIsLoading(false)
     }
   }
@@ -118,6 +150,7 @@ export function useProjectActions() {
     roomIdPreview,
     targetProject,
     isLoading,
+    errorMessage,
     openCreateDialog,
     openRenameDialog,
     openDeleteDialog,
