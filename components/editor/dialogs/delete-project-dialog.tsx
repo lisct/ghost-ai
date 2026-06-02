@@ -11,13 +11,13 @@ import {
 } from "@/components/ui/dialog"
 import { Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import type { Project } from "@/lib/mock-projects"
+import type { ProjectListItem } from "@/lib/projects"
 
 interface DeleteProjectDialogProps {
   open: boolean
   onClose: () => void
   onSubmit: () => void
-  project: Project | null
+  project: ProjectListItem | null
   isLoading: boolean
 }
 

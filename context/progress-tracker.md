@@ -4,11 +4,11 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- Feature 05: Prisma — Complete
+- Feature 07: Wire Editor Home — Complete
 
 ## Current Goal
 
-- None. Prisma data models, client singleton, and first migration complete.
+- None. Editor home sidebar and dialogs wired to real project API.
 
 ## Completed
 
@@ -16,7 +16,9 @@ Update this file whenever the current phase, active feature, or implementation s
 - `02-editor`: `EditorNavbar` and `ProjectSidebar` shell components created. Navbar is fixed-height with sidebar toggle (`PanelLeftOpen`/`PanelLeftClose`). Sidebar floats as an overlay (translate-x transition, does not push content), includes Projects header with close button, shadcn Tabs (My Projects / Shared) with empty placeholder states, and a full-width New Project button. Dialog pattern is ready via the existing shadcn `Dialog` component in `components/ui/dialog.tsx`.
 - `03-auth`: `@clerk/ui` installed. `proxy.ts` at project root wraps `clerkMiddleware` — all routes protected by default, `/sign-in` and `/sign-up` are public. `ClerkProvider` wraps root layout with Clerk `dark` base theme and CSS variable overrides (no hardcoded colors). Sign-in page (`/sign-in`) and sign-up page (`/sign-up`) use a two-panel layout: left panel (lg+) shows logo, tagline, and feature list; right panel shows the Clerk form; small screens show form only. `/` redirects authenticated users to `/editor` and unauthenticated users to `/sign-in`. `UserButton` added to the editor navbar right section.
 - `04-project-dialog`: Editor home screen with heading/description/New Project button. Create, Rename, and Delete project dialogs. Sidebar project item actions (rename, delete) with owned-only gating. Mobile backdrop scrim. `useProjectDialogs` hook + `ProjectDialogsContext`. Mock data only — no API calls.
-- `05-prisma`: `prisma/models/project.prisma` with `Project` and `ProjectCollaborator` models, enum `ProjectStatus` (DRAFT/ARCHIVED), cascade delete, correct indexes and unique constraints. `lib/prisma.ts` exports `db` as a cached singleton — branches on `DATABASE_URL`: `prisma+postgres://` uses `PrismaPg` adapter + Accelerate extension, otherwise uses `PrismaPg` directly. Migration `20260529191638_init` applied to Prisma Postgres. Generated client at `app/generated/prisma/`.
+- `05-prisma`: `prisma/models/project.prisma` with `Project` and `ProjectCollaborator` models, enum `ProjectStatus` (DRAFT/ARCHIVED), cascade delete, correct indexes and unique constraints. `lib/prisma.ts` exports `db` as a cached singleton — branches on `DATABASE_URL`: `prisma+postgres://` uses `PrismaPg` adapter + Accelerate extension, otherwise uses `PrismaPg` directly. Migration `20260529191638_init` applied to Prisma Postgres. Generated client at `app/generated/prisma/`. `@prisma/extension-accelerate` installed.
+- `06-project-apis`: REST endpoints at `app/api/projects/route.ts` (GET list, POST create) and `app/api/projects/[projectId]/route.ts` (PATCH rename, DELETE). Clerk `auth()` guards all routes (401 for unauthenticated). Owner-only enforcement on PATCH and DELETE (403 for non-owner). Missing name defaults to "Untitled Project". Backend only — UI not wired.
+- `07-wire-editor-home`: `lib/projects.ts` exports `ProjectListItem`, `getOwnedProjects`, `getSharedProjects`. `app/editor/page.tsx` is a server component that fetches both lists and passes them to `EditorShell`. `hooks/use-project-actions.ts` manages dialog state, generates room ID preview (slug + short suffix), and calls the project API (create → navigate to `/editor/{id}`, rename → refresh, delete → redirect or refresh). `EditorShell`, `ProjectSidebar`, all three dialogs, and `ProjectDialogsContext` updated to use `ProjectListItem` from `lib/projects`; mock data removed.
 
 ## In Progress
 
