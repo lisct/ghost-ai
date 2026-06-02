@@ -11,14 +11,15 @@ import {
 } from "@/components/ui/dialog"
 import { Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import type { Project } from "@/lib/mock-projects"
+import type { ProjectListItem } from "@/lib/projects"
 
 interface DeleteProjectDialogProps {
   open: boolean
   onClose: () => void
   onSubmit: () => void
-  project: Project | null
+  project: ProjectListItem | null
   isLoading: boolean
+  error?: string | null
 }
 
 export function DeleteProjectDialog({
@@ -27,6 +28,7 @@ export function DeleteProjectDialog({
   onSubmit,
   project,
   isLoading,
+  error,
 }: DeleteProjectDialogProps) {
   return (
     <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) onClose() }}>
@@ -45,6 +47,7 @@ export function DeleteProjectDialog({
             )}
           </DialogDescription>
         </DialogHeader>
+        {error && <p className="text-xs text-error">{error}</p>}
         <DialogFooter>
           <Button variant="destructive" disabled={isLoading} onClick={onSubmit}>
             {isLoading ? (

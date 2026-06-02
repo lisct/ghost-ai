@@ -13,23 +13,15 @@ import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-function toSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9-]/g, "")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "");
-}
-
 interface CreateProjectDialogProps {
   open: boolean;
   onClose: () => void;
   onSubmit: () => void;
   formName: string;
   setFormName: (name: string) => void;
+  roomIdPreview: string;
   isLoading: boolean;
+  error?: string | null;
 }
 
 export function CreateProjectDialog({
@@ -38,10 +30,11 @@ export function CreateProjectDialog({
   onSubmit,
   formName,
   setFormName,
+  roomIdPreview,
   isLoading,
+  error,
 }: CreateProjectDialogProps) {
-  const slug = toSlug(formName);
-  const canSubmit = Boolean(formName.trim()) && Boolean(slug) && !isLoading;
+  const canSubmit = Boolean(formName.trim()) && !isLoading;
 
   return (
     <Dialog
@@ -68,13 +61,14 @@ export function CreateProjectDialog({
             className="text-white"
           />
           <p className="h-4 text-xs text-copy-muted">
-            {slug && (
+            {roomIdPreview && (
               <>
-                Slug:{" "}
-                <span className="font-mono text-copy-secondary">{slug}</span>
+                Room ID:{" "}
+                <span className="font-mono text-copy-secondary">{roomIdPreview}</span>
               </>
             )}
           </p>
+          {error && <p className="text-xs text-error">{error}</p>}
         </div>
         <DialogFooter>
           <Button disabled={!canSubmit} onClick={onSubmit}>

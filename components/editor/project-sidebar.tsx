@@ -4,18 +4,16 @@ import { Pencil, Plus, Trash2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  MOCK_MY_PROJECTS,
-  MOCK_SHARED_PROJECTS,
-  type Project,
-} from "@/lib/mock-projects";
+import type { ProjectListItem } from "@/lib/projects";
 
 interface ProjectSidebarProps {
   isOpen: boolean;
   onClose: () => void;
   onNewProject: () => void;
-  onRenameProject: (project: Project) => void;
-  onDeleteProject: (project: Project) => void;
+  onRenameProject: (project: ProjectListItem) => void;
+  onDeleteProject: (project: ProjectListItem) => void;
+  myProjects: ProjectListItem[];
+  sharedProjects: ProjectListItem[];
 }
 
 export function ProjectSidebar({
@@ -24,6 +22,8 @@ export function ProjectSidebar({
   onNewProject,
   onRenameProject,
   onDeleteProject,
+  myProjects,
+  sharedProjects,
 }: ProjectSidebarProps) {
   return (
     <>
@@ -68,13 +68,13 @@ export function ProjectSidebar({
               </TabsTrigger>
             </TabsList>
             <TabsContent value="my-projects" className="mt-2 flex-1">
-              {MOCK_MY_PROJECTS.length === 0 ? (
+              {myProjects.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
                   <p className="text-sm text-copy-muted">No projects yet.</p>
                 </div>
               ) : (
                 <ul className="space-y-0.5">
-                  {MOCK_MY_PROJECTS.map((project) => (
+                  {myProjects.map((project) => (
                     <ProjectItem
                       key={project.id}
                       project={project}
@@ -86,13 +86,13 @@ export function ProjectSidebar({
               )}
             </TabsContent>
             <TabsContent value="shared" className="mt-2 flex-1">
-              {MOCK_SHARED_PROJECTS.length === 0 ? (
+              {sharedProjects.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
                   <p className="text-sm text-copy-muted">No shared projects.</p>
                 </div>
               ) : (
                 <ul className="space-y-0.5">
-                  {MOCK_SHARED_PROJECTS.map((project) => (
+                  {sharedProjects.map((project) => (
                     <ProjectItem
                       key={project.id}
                       project={project}
@@ -118,9 +118,9 @@ export function ProjectSidebar({
 }
 
 interface ProjectItemProps {
-  project: Project;
-  onRename: (project: Project) => void;
-  onDelete: (project: Project) => void;
+  project: ProjectListItem;
+  onRename: (project: ProjectListItem) => void;
+  onDelete: (project: ProjectListItem) => void;
 }
 
 function ProjectItem({ project, onRename, onDelete }: ProjectItemProps) {

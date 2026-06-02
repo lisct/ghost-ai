@@ -7,55 +7,33 @@ import { ProjectDialogsContext } from "./project-dialogs-context";
 import { CreateProjectDialog } from "./dialogs/create-project-dialog";
 import { RenameProjectDialog } from "./dialogs/rename-project-dialog";
 import { DeleteProjectDialog } from "./dialogs/delete-project-dialog";
-import { useProjectDialogs } from "@/hooks/use-project-dialogs";
+import { useProjectActions } from "@/hooks/use-project-actions";
+import type { ProjectListItem } from "@/lib/projects";
 
-export function EditorShell({ children }: { children: React.ReactNode }) {
+interface EditorShellProps {
+  children: React.ReactNode;
+  myProjects: ProjectListItem[];
+  sharedProjects: ProjectListItem[];
+}
+
+export function EditorShell({ children, myProjects, sharedProjects }: EditorShellProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const {
     dialog,
     formName,
     setFormName,
+    roomIdPreview,
     targetProject,
     isLoading,
-    setIsLoading,
+    errorMessage,
     openCreateDialog,
     openRenameDialog,
     openDeleteDialog,
     closeDialog,
-  } = useProjectDialogs();
-
-  async function handleCreate() {
-    setIsLoading(true);
-
-    try {
-      await new Promise((r) => setTimeout(r, 1200));
-      closeDialog();
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  async function handleRename() {
-    setIsLoading(true);
-
-    try {
-      await new Promise((r) => setTimeout(r, 1200));
-      closeDialog();
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  async function handleDelete() {
-    setIsLoading(true);
-
-    try {
-      await new Promise((r) => setTimeout(r, 1200));
-      closeDialog();
-    } finally {
-      setIsLoading(false);
-    }
-  }
+    handleCreate,
+    handleRename,
+    handleDelete,
+  } = useProjectActions();
 
   return (
     <ProjectDialogsContext.Provider
@@ -71,6 +49,8 @@ export function EditorShell({ children }: { children: React.ReactNode }) {
         onNewProject={openCreateDialog}
         onRenameProject={openRenameDialog}
         onDeleteProject={openDeleteDialog}
+        myProjects={myProjects}
+        sharedProjects={sharedProjects}
       />
       <main className="mt-12 h-[calc(100vh-3rem)]">{children}</main>
 
@@ -80,7 +60,9 @@ export function EditorShell({ children }: { children: React.ReactNode }) {
         onSubmit={handleCreate}
         formName={formName}
         setFormName={setFormName}
+        roomIdPreview={roomIdPreview}
         isLoading={isLoading}
+        error={errorMessage}
       />
       <RenameProjectDialog
         open={dialog === "rename"}
@@ -90,6 +72,7 @@ export function EditorShell({ children }: { children: React.ReactNode }) {
         formName={formName}
         setFormName={setFormName}
         isLoading={isLoading}
+        error={errorMessage}
       />
       <DeleteProjectDialog
         open={dialog === "delete"}
@@ -97,6 +80,7 @@ export function EditorShell({ children }: { children: React.ReactNode }) {
         onSubmit={handleDelete}
         project={targetProject}
         isLoading={isLoading}
+        error={errorMessage}
       />
     </ProjectDialogsContext.Provider>
   );

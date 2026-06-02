@@ -12,16 +12,17 @@ import {
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import type { Project } from "@/lib/mock-projects";
+import type { ProjectListItem } from "@/lib/projects";
 
 interface RenameProjectDialogProps {
   open: boolean;
   onClose: () => void;
   onSubmit: () => void;
-  project: Project | null;
+  project: ProjectListItem | null;
   formName: string;
   setFormName: (name: string) => void;
   isLoading: boolean;
+  error?: string | null;
 }
 
 export function RenameProjectDialog({
@@ -32,6 +33,7 @@ export function RenameProjectDialog({
   formName,
   setFormName,
   isLoading,
+  error,
 }: RenameProjectDialogProps) {
   function handleSubmit() {
     if (isLoading) return;
@@ -57,7 +59,7 @@ export function RenameProjectDialog({
             </DialogDescription>
           )}
         </DialogHeader>
-        <div className="py-1">
+        <div className="flex flex-col gap-2 py-1">
           <Input
             value={formName}
             onChange={(e) => setFormName(e.target.value)}
@@ -70,6 +72,7 @@ export function RenameProjectDialog({
             autoFocus
             className="text-white"
           />
+          {error && <p className="text-xs text-error">{error}</p>}
         </div>
         <DialogFooter>
           <Button
