@@ -1,5 +1,6 @@
 import { auth } from "@clerk/nextjs/server"
 import { clerkClient } from "@clerk/nextjs/server"
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client"
 import { db } from "@/lib/prisma"
 import { getCurrentIdentity } from "@/lib/project-access"
 
@@ -102,16 +103,14 @@ export async function POST(
   if (!raw || !EMAIL_RE.test(raw))
     return Response.json({ error: "A valid email is required" }, { status: 400 })
 
-  const existing = await db.projectCollaborator.findFirst({
-    where: { projectId, email: raw },
-    select: { id: true },
-  })
-  if (existing)
-    return Response.json({ error: "This person is already a collaborator" }, { status: 409 })
-
-  const collaborator = await db.projectCollaborator.create({
-    data: { projectId, email: raw },
-  })
-
-  return Response.json(collaborator, { status: 201 })
+  try {
+    const collaborator = await db.projectCollaborator.create({
+      data: { projectId, email: raw },
+    })
+    return Response.json(collaborator, { status: 201 })
+  } catch (e) {
+    if (e instanceof PrismaClientKnownRequestError && e.code === "P2002")
+      return Response.json({ error: "This person is already a collaborator" }, { status: 409 })
+    throw e
+  }
 }
