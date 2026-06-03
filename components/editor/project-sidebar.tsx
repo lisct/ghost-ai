@@ -14,6 +14,7 @@ interface ProjectSidebarProps {
   onDeleteProject: (project: ProjectListItem) => void;
   myProjects: ProjectListItem[];
   sharedProjects: ProjectListItem[];
+  activeProjectId?: string;
 }
 
 export function ProjectSidebar({
@@ -24,6 +25,7 @@ export function ProjectSidebar({
   onDeleteProject,
   myProjects,
   sharedProjects,
+  activeProjectId,
 }: ProjectSidebarProps) {
   return (
     <>
@@ -78,6 +80,7 @@ export function ProjectSidebar({
                     <ProjectItem
                       key={project.id}
                       project={project}
+                      isActive={project.id === activeProjectId}
                       onRename={onRenameProject}
                       onDelete={onDeleteProject}
                     />
@@ -96,6 +99,7 @@ export function ProjectSidebar({
                     <ProjectItem
                       key={project.id}
                       project={project}
+                      isActive={project.id === activeProjectId}
                       onRename={onRenameProject}
                       onDelete={onDeleteProject}
                     />
@@ -119,14 +123,25 @@ export function ProjectSidebar({
 
 interface ProjectItemProps {
   project: ProjectListItem;
+  isActive?: boolean;
   onRename: (project: ProjectListItem) => void;
   onDelete: (project: ProjectListItem) => void;
 }
 
-function ProjectItem({ project, onRename, onDelete }: ProjectItemProps) {
+function ProjectItem({ project, isActive, onRename, onDelete }: ProjectItemProps) {
   return (
-    <li className="group flex cursor-pointer items-center justify-between rounded-xl px-2 py-1.5 hover:bg-elevated">
-      <span className="truncate text-sm text-copy-secondary">
+    <li
+      className={cn(
+        "group flex cursor-pointer items-center justify-between rounded-xl px-2 py-1.5 hover:bg-elevated",
+        isActive && "bg-elevated",
+      )}
+    >
+      <span
+        className={cn(
+          "truncate text-sm",
+          isActive ? "text-copy-primary" : "text-copy-secondary",
+        )}
+      >
         {project.name}
       </span>
       {project.isOwned && (

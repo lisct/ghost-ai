@@ -4,11 +4,11 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- Feature 07: Wire Editor Home — Complete
+- Feature 09: Share Dialog — Complete
 
 ## Current Goal
 
-- None. Editor home sidebar and dialogs wired to real project API.
+- None. Share dialog with invite, remove, and Clerk enrichment implemented.
 
 ## Completed
 
@@ -19,6 +19,8 @@ Update this file whenever the current phase, active feature, or implementation s
 - `05-prisma`: `prisma/models/project.prisma` with `Project` and `ProjectCollaborator` models, enum `ProjectStatus` (DRAFT/ARCHIVED), cascade delete, correct indexes and unique constraints. `lib/prisma.ts` exports `db` as a cached singleton — branches on `DATABASE_URL`: `prisma+postgres://` uses `PrismaPg` adapter + Accelerate extension, otherwise uses `PrismaPg` directly. Migration `20260529191638_init` applied to Prisma Postgres. Generated client at `app/generated/prisma/`. `@prisma/extension-accelerate` installed.
 - `06-project-apis`: REST endpoints at `app/api/projects/route.ts` (GET list, POST create) and `app/api/projects/[projectId]/route.ts` (PATCH rename, DELETE). Clerk `auth()` guards all routes (401 for unauthenticated). Owner-only enforcement on PATCH and DELETE (403 for non-owner). Missing name defaults to "Untitled Project". Backend only — UI not wired.
 - `07-wire-editor-home`: `lib/projects.ts` exports `ProjectListItem`, `getOwnedProjects`, `getSharedProjects`. `app/editor/page.tsx` is a server component that fetches both lists and passes them to `EditorShell`. `hooks/use-project-actions.ts` manages dialog state, generates room ID preview (slug + short suffix), and calls the project API (create → navigate to `/editor/{id}`, rename → refresh, delete → redirect or refresh). `EditorShell`, `ProjectSidebar`, all three dialogs, and `ProjectDialogsContext` updated to use `ProjectListItem` from `lib/projects`; mock data removed.
+- `08-editor-workspace-shell`: `lib/project-access.ts` exports `getCurrentIdentity` (userId + normalized email via Clerk) and `getProjectWithAccess` (owner or collaborator check, returns `isOwner`). `app/editor/[roomId]/page.tsx` is a server component — redirects unauthenticated users, shows `AccessDenied` for missing/unauthorized projects, otherwise renders `WorkspaceShell`. `components/editor/access-denied.tsx` — centered lock icon, message, link back to `/editor`. `components/editor/workspace-navbar.tsx` — project name center, Share + AI sidebar toggle + UserButton right. `components/editor/workspace-shell.tsx` — full-viewport layout: left `ProjectSidebar` with `activeProjectId`, canvas placeholder, right AI sidebar placeholder (slide-over). `ProjectSidebar` updated with optional `activeProjectId` prop that highlights the active item.
+- `09-share-dialog`: `GET /api/projects/[projectId]/collaborators` lists collaborators enriched with Clerk display name + avatar (falls back to email if no Clerk user found); returns `isOwner`. `POST` invites a new collaborator (owner only, email validated, 409 on duplicate). `DELETE /api/projects/[projectId]/collaborators/[collaboratorId]` removes a collaborator (owner only). `components/editor/share-dialog.tsx` — owners see invite input + remove buttons + copy-link; collaborators see read-only list + copy-link. Clerk avatars served via `img.clerk.com` (added to `next.config.ts` `remotePatterns`). `WorkspaceNavbar` Share button wired; `WorkspaceShell` renders `ShareDialog` with `isOwner` from the server.
 
 ## In Progress
 
